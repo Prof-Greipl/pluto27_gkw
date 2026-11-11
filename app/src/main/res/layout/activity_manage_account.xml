@@ -48,20 +48,20 @@
         android:layout_weight = "1"/>
 
     <TextView
-        android:id="@+id/passwordText"
+        android:id="@+id/manageAccountPasswordText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Pls enter your password before we delete your account." />
 
     <EditText
-        android:id="@+id/editTextTextPassword"
+        android:id="@+id/manageAccountPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textPassword" />
 
     <Button
-        android:id="@+id/button4"
+        android:id="@+id/manageAccountButtonDelete"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:backgroundTint="#FF5722"

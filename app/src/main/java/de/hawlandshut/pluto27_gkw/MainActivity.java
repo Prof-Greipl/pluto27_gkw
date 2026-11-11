@@ -14,9 +14,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
+
+import de.hawlandshut.pluto27_gkw.model.Post;
+import de.hawlandshut.pluto27_gkw.test.Testdata;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG= "xxx MainActivity";
+    RecyclerView mRecyclerView;
+    CustomAdapter mAdapter;
 
     // TODO: Hier rausnehmen
     @Override
@@ -31,6 +40,18 @@ public class MainActivity extends AppCompatActivity {
         });
         Log.d(TAG, "onCreate");
         Toast.makeText(getApplicationContext(), "App started", Toast.LENGTH_LONG).show();
+
+        // TODO: Testdaten erzeugen; remove later
+        ArrayList<Post> postList = Testdata.createPostList(100);
+
+        // Manage Recycler View and Adapter
+        // Manage the adapter with testdata
+        mAdapter = new CustomAdapter();
+        mAdapter.mPostList = postList; // Adapter Zugriff auf meine Posts geben.
+
+        mRecyclerView = (RecyclerView) findViewById( R.id.recycler_view);
+        mRecyclerView.setLayoutManager( new LinearLayoutManager( this ));
+        mRecyclerView.setAdapter( mAdapter );
     }
 
     @Override
@@ -56,8 +77,8 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         // Abflug zu SignActity zum Testen
         // TODO: Remove later
-        Intent intent = new Intent(this, ManageAccountActivity.class);
-        startActivity( intent );
+        //Intent intent = new Intent(this, SignInActivity.class);
+        //startActivity( intent );
         Log.d(TAG, "onStart");
     }
 

@@ -7,3 +7,10 @@
 - Activity-Lifecycle
 - SignInActivity
 - ManageAccountActivity (nur Layout)
+
+# T3 (10.11.2026)
+- ManageAccountActivity (UI finalisiert)
+- SignInActivity (UI finalisiert)
+- MainActivity (UI finalisiert) mit Recycler View
+- Post.java mit Testdatenerzeugung
+- Homework: PostActivity (analog zu den anderen Activities)

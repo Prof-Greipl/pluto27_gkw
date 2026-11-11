@@ -1,5 +1,6 @@
 package de.hawlandshut.pluto27_gkw;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -68,7 +69,9 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void doRegister() {
-        Toast.makeText(getApplicationContext(), "Register clicked", Toast.LENGTH_LONG).show();
+        // AccountCreation erfolgt in der CreateAccountActivity.
+        Intent intent = new Intent(this, CreateAccountActivity.class);
+        startActivity( intent );
     }
 
     private void doResetPassword() {
