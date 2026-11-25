@@ -14,3 +14,11 @@
 - MainActivity (UI finalisiert) mit Recycler View
 - Post.java mit Testdatenerzeugung
 - Homework: PostActivity (analog zu den anderen Activities)
+
+# T4 (24.11.2026)
+- Firebase Authentifizierung mit allen Funktionen in MainActivity
+- Hinweis: Der nicht funktionierende Link für Password-Reset 
+und Mail-Verification funktionierte einen Tag später wie erwartet. 
+Der Grund war ein fehlender Api-Key im Link von Google. Die Ursache ist mir nicht bekannt ):
+
+

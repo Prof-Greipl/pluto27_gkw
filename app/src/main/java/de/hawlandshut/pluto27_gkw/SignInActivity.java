@@ -2,6 +2,7 @@ package de.hawlandshut.pluto27_gkw;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,6 +14,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 public class SignInActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG= "xxx SignInActivity";
@@ -22,6 +25,8 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
     Button mButtonSignIn;
     Button mButtonResetPassword;
     Button mButtonRegister;
+
+    FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +55,9 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         // TODO: Remove before production
         mEmail.setText("fhgreipl@gmail.com");
         mPassword.setText("123456");
+
+        // Initialize Firebase Auth
+        mAuth = FirebaseAuth.getInstance();
     }
 
     @Override
@@ -79,6 +87,37 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void doSignIn() {
-        Toast.makeText(this, "Sign in clicked", Toast.LENGTH_SHORT).show();
+        String email = mEmail.getText().toString(); // Hole E-Mail aus dem Eingabefeld
+        String password = mPassword.getText().toString(); // Hole Passwort aus dem Eingabefeld
+        // Validierung
+        if (email.isEmpty()) {
+            Toast.makeText(this, "E-Mail missing", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (password.isEmpty()) {
+            Toast.makeText(this, "Password missing", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+
+        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(
+                this, task -> {
+                    if (task.isSuccessful()) {
+                        // Sign in success, update UI with the signed-in user's information
+                        Toast.makeText(getApplicationContext(), "User signed in",
+                                Toast.LENGTH_LONG).show();
+                        Log.d(TAG, "signInWithEmail:success");
+                        //
+                        finish();
+                    }
+                    else {
+                        // If sign in fails, display a message to the user.
+                        Log.w(TAG, "signInWithEmail:failure", task.getException());
+                        Toast.makeText(getApplicationContext(), "Sign in failed",
+                                Toast.LENGTH_LONG).show();
+                    }
+
+                });
     }
+
 }

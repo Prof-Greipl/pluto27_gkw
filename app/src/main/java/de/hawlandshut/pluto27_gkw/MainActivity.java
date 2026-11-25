@@ -17,6 +17,9 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import java.util.ArrayList;
 
 import de.hawlandshut.pluto27_gkw.model.Post;
@@ -27,6 +30,10 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView mRecyclerView;
     CustomAdapter mAdapter;
 
+    private static final String TEST_MAIL = "fhgreipl@gmail.com";
+    private static final String TEST_PASSWORD ="123456";
+
+    FirebaseAuth mAuth;
     // TODO: Hier rausnehmen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,8 +48,11 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate");
         Toast.makeText(getApplicationContext(), "App started", Toast.LENGTH_LONG).show();
 
+        // Initialize Firebase Auth
+        mAuth = FirebaseAuth.getInstance();
+
         // TODO: Testdaten erzeugen; remove later
-        ArrayList<Post> postList = Testdata.createPostList(100);
+        ArrayList<Post> postList = Testdata.createPostList(3);
 
         // Manage Recycler View and Adapter
         // Manage the adapter with testdata
@@ -63,6 +73,129 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        if (item.getItemId() == R.id.menu_test_auth) {
+            doTestAuth();
+        }
+
+        if (item.getItemId() == R.id.menu_create_user) {
+            mAuth.createUserWithEmailAndPassword(TEST_MAIL, TEST_PASSWORD)
+                    .addOnCompleteListener(this, task -> {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Toast.makeText(getApplicationContext(), "User created",
+                                    Toast.LENGTH_LONG).show();
+                            Log.d(TAG, "createUserWithEmail:success");
+                        }
+                        else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "createUserWithEmail:failure", task.getException());
+                            Toast.makeText(getApplicationContext(), "User Creation failed",
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    });
+        }
+
+        if (item.getItemId() == R.id.menu_sign_out){
+            FirebaseUser user = mAuth.getCurrentUser();
+            if (user == null) {
+                Toast.makeText(getApplicationContext(), "Sign out not needed - no user", Toast.LENGTH_LONG).show();
+                return true;
+            }
+            mAuth.signOut();
+            Toast.makeText(getApplicationContext(), "User signed out", Toast.LENGTH_LONG).show();
+        }
+
+        if (item.getItemId() == R.id.menu_sign_in){
+            FirebaseUser user = mAuth.getCurrentUser();
+            if (user != null) {
+                Toast.makeText(getApplicationContext(), "User already logged in. Pls. sign out first" + user.getEmail(),
+                        Toast.LENGTH_LONG).show();
+                return true;
+            }
+
+            mAuth.signInWithEmailAndPassword(TEST_MAIL, TEST_PASSWORD).addOnCompleteListener(
+                    this, task -> {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Toast.makeText(getApplicationContext(), "User signed in",
+                                    Toast.LENGTH_LONG).show();
+                            Log.d(TAG, "signInWithEmail:success");
+                        }
+                        else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "signInWithEmail:failure", task.getException());
+                            Toast.makeText(getApplicationContext(), "Sign in failed",
+                                    Toast.LENGTH_LONG).show();
+                        }
+
+                    });
+        }
+
+        if (item.getItemId() == R.id.menu_delete){
+            FirebaseUser user = mAuth.getCurrentUser();
+            if (user == null) {
+                Toast.makeText(getApplicationContext(), "Delete not possible - sign in first", Toast.LENGTH_LONG).show();
+                return true;
+            }
+
+            user.delete().addOnCompleteListener(
+                    this, task -> {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Toast.makeText(getApplicationContext(), "User deleted", Toast.LENGTH_LONG).show();
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "User deletion failed", task.getException());
+                            Toast.makeText(getApplicationContext(), "User deletion failed: " + task.getException(), Toast.LENGTH_LONG).show();
+                        }
+                    });
+        }
+
+        if (item.getItemId() == R.id.menu_password_reset_email){
+            mAuth.sendPasswordResetEmail(TEST_MAIL).addOnCompleteListener(
+                    this, task -> {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Toast.makeText(getApplicationContext(), "Password reset email sent", Toast.LENGTH_LONG).show();
+                            Log.d(TAG, "Password reset email sent");
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "Password reset email failed", task.getException());
+                            Toast.makeText(getApplicationContext(), "Password reset email failed", Toast.LENGTH_LONG).show();
+                        }
+                    });
+        }
+
+        if (item.getItemId() == R.id.menu_verification_mail){
+            FirebaseUser user = mAuth.getCurrentUser();
+            if (user == null) {
+                Toast.makeText(getApplicationContext(), "Verification mail not possible - sign in first", Toast.LENGTH_LONG).show();
+                return true;
+            }
+
+            user.sendEmailVerification().addOnCompleteListener(this, task -> {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Toast.makeText(getApplicationContext(), "Verification mail sent", Toast.LENGTH_LONG).show();
+                            Log.d(TAG, "Verification mail sent");
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "Verification mail failed", task.getException());
+                            Toast.makeText(getApplicationContext(), "Verification mail failed", Toast.LENGTH_LONG).show();
+                        }
+                    }
+            );
+
+        }
+
+
+
+
+
+
+
+
         if (item.getItemId() == R.id.mainMenuHelp) {
             Toast.makeText(getApplicationContext(), "Help clicked", Toast.LENGTH_LONG).show();
         }
@@ -75,10 +208,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        // Abflug zu SignActity zum Testen
-        // TODO: Remove later
-        //Intent intent = new Intent(this, SignInActivity.class);
-        //startActivity( intent );
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user == null) {
+            Intent intent = new Intent(this, SignInActivity.class);
+            startActivity( intent );
+        }
         Log.d(TAG, "onStart");
     }
 
@@ -87,4 +221,18 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         Log.d(TAG, "onResume");
     }
+
+    private void doTestAuth() {
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null) {
+            Toast.makeText(getApplicationContext(), "User is logged in: "
+                            + user.getEmail() + " - "
+                            + user.getUid()
+                            + " (" + user.isEmailVerified() +")"
+                    , Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(getApplicationContext(), "User is not logged in", Toast.LENGTH_LONG).show();
+        }
+    }
+
 }

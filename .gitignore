@@ -14,3 +14,4 @@
 .cxx
 local.properties
 /dg_internal
+/app/src/google-services.json

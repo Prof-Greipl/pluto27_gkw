@@ -28,7 +28,7 @@ public class CustomAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         Post post = mPostList.get(position);
-        Log.d("xxx", "called with position = " + position);
+        Log.d("xxx", "called with position = " + position + "(HolderId =" + System.identityHashCode(holder)+")");
         ((CustomViewHolder) holder).mLine1.setText(post.title + " (" + post.createdAt +")");
         ((CustomViewHolder) holder).mLine2.setText(post.body);
     }
